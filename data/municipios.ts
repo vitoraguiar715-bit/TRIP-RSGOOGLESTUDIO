@@ -463,6 +463,9 @@ Três de Maio;56767,21 R$;25466 pessoas;421,461 km²;Ijuí;Noroeste Rio-grandens
 Três Forquilhas;24297,46 R$;2813 pessoas;217,386 km²;Porto Alegre;Metropolitana de Porto Alegre
 Três Palmeiras;42185,43 R$;4829 pessoas;180,599 km²;Passo Fundo;Noroeste Rio-grandense
 Três Passos;43406,37 R$;26304 pessoas;268,902 km²;Ijuí;Noroeste Rio-grandense
+Três Forquilhas;24297,46 R$;2813 pessoas;217,386 km²;Porto Alegre;Metropolitana de Porto Alegre
+Três Palmeiras;42185,43 R$;4829 pessoas;180,599 km²;Passo Fundo;Noroeste Rio-grandense
+Três Passos;43406,37 R$;26304 pessoas;268,902 km²;Ijuí;Noroeste Rio-grandense
 Trindade do Sul;60779,96 R$;7785 pessoas;268,417 km²;Passo Fundo;Noroeste Rio-grandense
 Triunfo;430464,73 R$;28435 pessoas;817,807 km²;Porto Alegre;Metropolitana de Porto Alegre
 Tucunduva;46209,93 R$;5646 pessoas;181,198 km²;Ijuí;Noroeste Rio-grandense
@@ -1079,6 +1082,23 @@ const getTourismRegion = (name: string, regiaoIntermediaria: string, mesorregiao
   return "Rota das Terras Encantadas"; 
 };
 
+// Determines the Biome based on Mesoregion classification by IBGE
+const getBiome = (mesorregiao: string): string => {
+  const PAMPA_REGIONS = [
+    "Sudoeste Rio-grandense",
+    "Sudeste Rio-grandense",
+    "Centro Ocidental Rio-grandense",
+  ];
+
+  if (PAMPA_REGIONS.includes(mesorregiao)) {
+    return "Pampa";
+  }
+  
+  // Generally, the Northern/Eastern/Metro parts are classified as Mata Atlântica
+  // This includes: Metropolitana de Porto Alegre, Nordeste, Noroeste, Centro Oriental
+  return "Mata Atlântica";
+};
+
 const parseData = (): Record<string, MunicipalityData> => {
   const lines = rawCsvData.split('\n');
   const map: Record<string, MunicipalityData> = {};
@@ -1100,7 +1120,8 @@ const parseData = (): Record<string, MunicipalityData> => {
       area: area.trim(),
       regiaoIntermediaria: regiaoIntermediaria,
       mesorregiao: mesorregiao,
-      regiaoTuristica: getTourismRegion(cleanName, regiaoIntermediaria, mesorregiao)
+      regiaoTuristica: getTourismRegion(cleanName, regiaoIntermediaria, mesorregiao),
+      biome: getBiome(mesorregiao)
     };
   });
 
@@ -1124,7 +1145,7 @@ export const REGIOES_TURISTICAS = [
 ];
 
 // Helper function to parse formatted strings to numbers
-const parseValue = (str: string): number => {
+export const parseValue = (str: string): number => {
   const clean = str.replace(/[^\d,]/g, '').replace(',', '.');
   return parseFloat(clean) || 0;
 };

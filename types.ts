@@ -1,3 +1,4 @@
+
 export interface MunicipalityProperties {
   id: string;
   name: string;
@@ -12,6 +13,7 @@ export interface MunicipalityData {
   regiaoIntermediaria: string;
   mesorregiao: string;
   regiaoTuristica: string;
+  biome: string; // Propriedade adicionada
 }
 
 export interface GeoJSONFeature {
